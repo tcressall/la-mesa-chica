@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil — La Mesa Chica</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .profile-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.5rem;
+      padding: 2rem 0 1.5rem;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .profile-avatar-lg {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 500;
+      background: var(--green-dark);
+      color: rgba(168, 212, 180, 0.9);
+      border: 0.5px solid rgba(44, 74, 58, 0.8);
+      flex-shrink: 0;
+    }
+
+    .profile-info { flex: 1; min-width: 200px; }
+    .profile-info h1 { margin-bottom: 2px; font-size: 1.6rem; }
+    .profile-info .email { font-size: 0.82rem; color: var(--cream-muted); margin-bottom: 8px; }
+
+    .profile-stats {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .profile-stat { font-size: 0.82rem; color: var(--cream-muted); }
+    .profile-stat strong { color: var(--gold); font-size: 1rem; display: block; }
+
+    .edit-form {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .edit-form.open { display: block; }
+
+    .edit-row {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .edit-row .form-group { flex: 1; min-width: 160px; margin-bottom: 0; }
+
+    /* Mis reseñas */
+    .mi-resena-card {
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-bottom: 8px;
+      transition: border-color 0.15s;
+    }
+
+    .mi-resena-card:hover { border-color: var(--border-hover); }
+
+    .mi-resena-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      gap: 1rem;
+    }
+
+    .mi-resena-header h3 {
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      color: var(--cream);
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .mi-resena-scores {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .score-pill {
+      font-size: 0.75rem;
+      color: var(--cream-muted);
+      background: var(--bg-raised);
+      border: 0.5px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 10px;
+    }
+
+    .score-pill span { color: var(--gold); }
+
+    .mi-resena-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 0.5px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--cream-muted);
+    }
+
+    .delete-btn {
+      background: none;
+      border: none;
+      color: var(--cream-muted);
+      font-size: 0.78rem;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: color 0.15s;
+      padding: 0;
+    }
+
+    .delete-btn:hover { color: #f5b8a8; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="home.html" class="navbar-brand">La Mesa Chica</a>
+    <ul class="nav-links">
+      <li><a href="home.html">Inicio</a></li>
+      <li><a href="restaurantes.html">Restaurantes</a></li>
+      <li><a href="sesiones.html">Sesiones</a></li>
+    </ul>
+    <a href="perfil.html" class="nav-avatar" id="navAvatar">?</a>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="container" style="max-width:720px">
+
+      <!-- Header del perfil -->
+      <div class="profile-header fade-in">
+        <div class="profile-avatar-lg" id="profileAvatar">?</div>
+        <div class="profile-info">
+          <h1 id="profileNombre">Cargando...</h1>
+          <p class="email" id="profileEmail">—</p>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <span id="profileBadge"></span>
+            <span id="profileEstado"></span>
+          </div>
+          <div class="profile-stats" id="profileStats"></div>
+
+          <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-ghost" style="font-size:0.82rem;padding:6px 14px" onclick="toggleEdit()">Editar perfil</button>
+            <button class="btn btn-danger" style="font-size:0.82rem;padding:6px 14px" onclick="signOut(client)">Cerrar sesión</button>
+          </div>
+
+          <!-- Form edición -->
+          <div class="edit-form" id="editForm">
+            <div class="divider"></div>
+            <div class="edit-row">
+              <div class="form-group">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-input" id="editNombre" placeholder="Tu nombre">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Apodo</label>
+                <input type="text" class="form-input" id="editApodo" placeholder="Como te conocen">
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:8px">
+              <button class="btn btn-primary" style="font-size:0.82rem;padding:7px 16px" onclick="saveProfile()">Guardar</button>
+              <button class="btn btn-ghost"   style="font-size:0.82rem;padding:7px 16px" onclick="toggleEdit()">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mis reseñas -->
+      <div class="section-header" style="margin-bottom:1rem">
+        <h2>Mis reseñas</h2>
+        <a href="resena.html" class="btn btn-primary" style="font-size:0.8rem;padding:6px 14px">+ Nueva reseña</a>
+      </div>
+      <div id="misResenas">
+        <div class="loading">Cargando reseñas...</div>
+      </div>
+
+      <!-- Mis salidas -->
+      <div class="section" style="margin-top:2rem">
+        <div class="section-header" style="margin-bottom:1rem">
+          <h2>Mis salidas</h2>
+        </div>
+        <div id="misSalidas">
+          <div class="loading">Cargando salidas...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const client = initSupabase()
+    let userId = null
+    let userProfile = null
+
+    async function init() {
+      const session = await requireAuth(client)
+      if (!session) return
+      userId = session.user.id
+
+      userProfile = await getUserProfile(client, userId)
+      renderProfile(userProfile, session.user.email)
+
+      await Promise.all([loadMisResenas(), loadMisSalidas()])
+    }
+
+    function renderProfile(p, email) {
+      const nombre = p?.apodo || p?.nombre || 'Miembro'
+      document.getElementById('profileAvatar').textContent = getInitials(nombre)
+      document.getElementById('navAvatar').textContent     = getInitials(nombre)
+      document.getElementById('profileNombre').textContent = p?.nombre || '—'
+      document.getElementById('profileEmail').textContent  = email || p?.email || '—'
+
+      if (p?.rol === 'admin') {
+        document.getElementById('profileBadge').innerHTML = '<span class="badge badge-admin">admin</span>'
+      }
+      if (p?.estado === 'paused') {
+        document.getElementById('profileEstado').innerHTML = '<span class="badge badge-paused">en pausa</span>'
+      }
+
+      document.getElementById('editNombre').value = p?.nombre || ''
+      document.getElementById('editApodo').value  = p?.apodo  || ''
+    }
+
+    function toggleEdit() {
+      document.getElementById('editForm').classList.toggle('open')
+    }
+
+    async function saveProfile() {
+      const nombre = document.getElementById('editNombre').value.trim()
+      const apodo  = document.getElementById('editApodo').value.trim()
+
+      if (!nombre) { showToast('El nombre no puede estar vacío', 'error'); return }
+
+      const { error } = await client
+        .from('usuarios')
+        .update({ nombre, apodo: apodo || null })
+        .eq('id', userId)
+
+      if (error) { showToast('Error al guardar', 'error'); return }
+
+      document.getElementById('profileNombre').textContent = nombre
+      document.getElementById('profileAvatar').textContent = getInitials(apodo || nombre)
+      document.getElementById('navAvatar').textContent     = getInitials(apodo || nombre)
+      toggleEdit()
+      showToast('Perfil actualizado', 'success')
+    }
+
+    async function loadMisResenas() {
+      const { data, error } = await client
+        .from('resenas')
+        .select('*, restaurantes(nombre, zona, tipo_cocina)')
+        .eq('usuario_id', userId)
+        .order('fecha', { ascending: false })
+
+      const container = document.getElementById('misResenas')
+
+      // Stats
+      document.getElementById('profileStats').innerHTML = `
+        <div class="profile-stat"><strong>${data?.length || 0}</strong>Reseñas</div>
+      `
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>Todavía no escribiste ninguna reseña.<br><a href="resena.html" style="color:var(--gold)">Escribir mi primera reseña →</a></p></div>'
+        return
+      }
+
+      container.innerHTML = ''
+      data.forEach(r => {
+        const card = document.createElement('div')
+        card.className = 'mi-resena-card fade-in'
+        card.innerHTML = `
+          <div class="mi-resena-header">
+            <div>
+              <h3>${r.restaurantes?.nombre || '—'}</h3>
+              <p style="font-size:0.78rem;color:var(--cream-muted)">${r.restaurantes?.zona || ''} · ${r.restaurantes?.tipo_cocina || ''}</p>
+            </div>
+            <div class="stars-display" id="stars-resena-${r.id}"></div>
+          </div>
+          <div class="mi-resena-scores">
+            <span class="score-pill">Comida <span>${parseFloat(r.comida).toFixed(1)}</span></span>
+            <span class="score-pill">Atención <span>${parseFloat(r.atencion).toFixed(1)}</span></span>
+            ${r.postres ? `<span class="score-pill">Postres <span>${parseFloat(r.postres).toFixed(1)}</span></span>` : ''}
+            <span class="score-pill">Precio <span>${precioLabel(r.precio_rango)}</span></span>
+          </div>
+          ${r.comentario ? `<p style="font-size:0.82rem;color:var(--cream-muted);margin-top:8px;font-style:italic">"${r.comentario}"</p>` : ''}
+          <div class="mi-resena-footer">
+            <span>${formatFecha(r.fecha)}</span>
+            <div style="display:flex;gap:10px">
+              <a href="resena.html?id=${r.restaurante_id}" style="font-size:0.78rem;color:var(--gold-muted)">Editar</a>
+              <button class="delete-btn" onclick="deleteResena('${r.id}', this)">Eliminar</button>
+            </div>
+          </div>
+        `
+        container.appendChild(card)
+
+        // Calcular promedio
+        const vals = [r.comida, r.atencion, r.postres].filter(Boolean).map(Number)
+        const avg = vals.reduce((a,b) => a+b, 0) / vals.length
+        renderStars(document.getElementById(`stars-resena-${r.id}`), avg, 14)
+      })
+    }
+
+    async function deleteResena(id, btn) {
+      if (!confirm('¿Eliminar esta reseña?')) return
+      const { error } = await client.from('resenas').delete().eq('id', id)
+      if (error) { showToast('Error al eliminar', 'error'); return }
+      btn.closest('.mi-resena-card').remove()
+      showToast('Reseña eliminada', 'success')
+    }
+
+    async function loadMisSalidas() {
+      const { data, error } = await client
+        .from('salidas')
+        .select('*, restaurantes(nombre, zona)')
+        .eq('confirmada', true)
+        .contains('asistentes', [userId])
+        .order('fecha', { ascending: false })
+
+      const container = document.getElementById('misSalidas')
+
+      // Agregar stat
+      const statsEl = document.getElementById('profileStats')
+      statsEl.innerHTML += `<div class="profile-stat"><strong>${data?.length || 0}</strong>Salidas</div>`
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No aparecés en ninguna salida registrada todavía.</p></div>'
+        return
+      }
+
+      container.innerHTML = ''
+      data.forEach(s => {
+        const item = document.createElement('div')
+        item.className = 'card-sm fade-in'
+        item.style.marginBottom = '8px'
+        const precio = s.precio_por_persona
+          ? `USD ${parseFloat(s.precio_por_persona).toFixed(0)} por persona`
+          : (s.precio_rango ? precioLabel(s.precio_rango) : '—')
+        item.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <p style="font-size:0.9rem;font-weight:500;color:var(--cream)">${s.restaurantes?.nombre || '—'}</p>
+              <p style="font-size:0.78rem">${formatFecha(s.fecha)} · ${s.restaurantes?.zona || ''}</p>
+            </div>
+            <span style="font-size:0.82rem;color:var(--gold)">${precio}</span>
+          </div>
+        `
+        container.appendChild(item)
+      })
+    }
+
+    init()
+  </script>
+</body>
+</html>

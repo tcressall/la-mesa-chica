@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurantes — La Mesa Chica</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+      align-items: center;
+    }
+
+    .filter-btn {
+      font-size: 0.8rem;
+      padding: 5px 14px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border);
+      background: transparent;
+      color: var(--cream-muted);
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.15s;
+    }
+
+    .filter-btn:hover { border-color: var(--border-hover); color: var(--cream); }
+    .filter-btn.active { border-color: var(--gold); background: var(--gold-subtle); color: var(--gold); }
+
+    .filter-search {
+      flex: 1;
+      min-width: 200px;
+      max-width: 280px;
+    }
+
+    /* Tarjeta restaurante */
+    .resto-card {
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      transition: all 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .resto-card:hover { border-color: var(--border-hover); transform: translateY(-1px); }
+
+    .resto-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.75rem;
+      gap: 1rem;
+    }
+
+    .resto-card-header h3 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 3px;
+    }
+
+    .resto-meta { font-size: 0.78rem; color: var(--cream-muted); }
+
+    .resto-score {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .resto-score .big-score {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .resto-score .score-label {
+      font-size: 0.7rem;
+      color: var(--cream-muted);
+      margin-top: 2px;
+    }
+
+    .resto-bars { margin: 0.75rem 0; }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+
+    .bar-label { font-size: 0.75rem; color: var(--cream-muted); width: 60px; flex-shrink: 0; }
+    .bar-val   { font-size: 0.75rem; color: var(--gold); width: 28px; text-align: right; flex-shrink: 0; }
+    .bar-wrap  { flex: 1; }
+
+    .resto-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 0.5px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--cream-muted);
+    }
+
+    .resto-footer .resenas-count { display: flex; align-items: center; gap: 5px; }
+
+    /* Sin reseñas */
+    .no-reviews {
+      opacity: 0.6;
+    }
+
+    .no-reviews .big-score { color: var(--cream-muted); font-size: 1rem; }
+
+    /* Modal detalle */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(14, 11, 7, 0.85);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      width: 100%;
+      max-width: 520px;
+      max-height: 85vh;
+      overflow-y: auto;
+      transform: translateY(12px);
+      transition: transform 0.2s;
+    }
+
+    .modal-overlay.open .modal { transform: translateY(0); }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      color: var(--cream-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+
+    .modal-close:hover { color: var(--cream); }
+
+    .resenas-list { margin-top: 1rem; }
+
+    .resena-item {
+      padding: 0.9rem 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .resena-item:last-child { border-bottom: none; }
+
+    .resena-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .resena-header .nombre { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
+    .resena-header .fecha  { font-size: 0.75rem; color: var(--cream-muted); margin-left: auto; }
+
+    .resena-scores {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 6px;
+      flex-wrap: wrap;
+    }
+
+    .resena-score-item { font-size: 0.78rem; color: var(--cream-muted); }
+    .resena-score-item span { color: var(--gold); font-weight: 500; }
+
+    .resena-comentario {
+      font-size: 0.82rem;
+      color: var(--cream-muted);
+      font-style: italic;
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="home.html" class="navbar-brand">La Mesa Chica</a>
+    <ul class="nav-links">
+      <li><a href="home.html">Inicio</a></li>
+      <li><a href="restaurantes.html" class="active">Restaurantes</a></li>
+      <li><a href="sesiones.html">Sesiones</a></li>
+    </ul>
+    <a href="perfil.html" class="nav-avatar" id="navAvatar">?</a>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="container">
+
+      <div class="page-title">
+        <h1>Restaurantes</h1>
+        <p>Ranking del grupo ordenado por promedio general</p>
+      </div>
+
+      <!-- Filtros -->
+      <div class="filters" id="filtersRow">
+        <input type="text" class="form-input filter-search" placeholder="Buscar restaurante..." id="searchInput" oninput="filterCards()">
+        <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">Todos</button>
+        <!-- Filtros por zona se cargan dinámicamente -->
+      </div>
+
+      <!-- Grid de restaurantes -->
+      <div class="grid-2 stagger" id="restoGrid">
+        <div class="loading">Cargando restaurantes...</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal detalle -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalContent">
+      <div class="modal-header">
+        <div>
+          <h2 id="modalNombre">—</h2>
+          <p id="modalMeta" style="font-size:0.85rem;margin-top:2px">—</p>
+        </div>
+        <button class="modal-close" onclick="closeModalDirect()">×</button>
+      </div>
+
+      <div style="display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem;flex-wrap:wrap">
+        <div>
+          <div style="font-size:2.5rem;font-family:var(--font-display);color:var(--gold);line-height:1" id="modalScore">—</div>
+          <div style="font-size:0.75rem;color:var(--cream-muted);margin-top:2px">promedio general</div>
+          <div class="stars-display" id="modalStars" style="margin-top:6px"></div>
+        </div>
+        <div style="flex:1;min-width:160px">
+          <div class="bar-row">
+            <span class="bar-label">Comida</span>
+            <div class="bar-wrap"><div class="score-bar"><div class="score-fill" id="mBarComida" style="width:0%"></div></div></div>
+            <span class="bar-val" id="mValComida">—</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Atención</span>
+            <div class="bar-wrap"><div class="score-bar"><div class="score-fill" id="mBarAtencion" style="width:0%"></div></div></div>
+            <span class="bar-val" id="mValAtencion">—</span>
+          </div>
+          <div class="bar-row">
+            <span class="bar-label">Postres</span>
+            <div class="bar-wrap"><div class="score-bar"><div class="score-fill" id="mBarPostres" style="width:0%;background:var(--wine)" ></div></div></div>
+            <span class="bar-val" id="mValPostres">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap" id="modalTags"></div>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+        <h3 style="font-family:var(--font-body);font-size:0.9rem;color:var(--cream)">Reseñas del grupo</h3>
+        <a href="resena.html" id="modalResenaBtn" class="btn btn-primary" style="font-size:0.8rem;padding:6px 14px">+ Mi reseña</a>
+      </div>
+
+      <div class="resenas-list" id="modalResenas">
+        <div class="loading">Cargando reseñas...</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const client = initSupabase()
+    let allRestaurants = []
+    let activeFilter = 'all'
+
+    async function init() {
+      const session = await requireAuth(client)
+      if (!session) return
+
+      const profile = await getUserProfile(client, session.user.id)
+      document.getElementById('navAvatar').textContent = getInitials(profile?.apodo || profile?.nombre || '')
+
+      await loadRestaurants()
+
+      // Si hay hash en la URL, abrir ese restaurante
+      if (window.location.hash) {
+        const id = window.location.hash.slice(1)
+        const r = allRestaurants.find(x => x.id === id)
+        if (r) openModal(r)
+      }
+    }
+
+    async function loadRestaurants() {
+      const { data, error } = await client
+        .from('restaurantes_ranking')
+        .select('*')
+        .eq('activo', true)
+        .order('avg_general', { ascending: false, nullsFirst: false })
+
+      const grid = document.getElementById('restoGrid')
+
+      if (error || !data || data.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><p>No hay restaurantes cargados aún.<br>Un admin puede agregarlos desde el panel.</p></div>'
+        return
+      }
+
+      allRestaurants = data
+      buildZonaFilters(data)
+      renderCards(data)
+    }
+
+    function buildZonaFilters(data) {
+      const zonas = [...new Set(data.map(r => r.zona).filter(Boolean))]
+      const row = document.getElementById('filtersRow')
+      zonas.forEach(z => {
+        const btn = document.createElement('button')
+        btn.className = 'filter-btn'
+        btn.dataset.filter = z
+        btn.textContent = z
+        btn.onclick = () => setFilter(z, btn)
+        row.appendChild(btn)
+      })
+    }
+
+    function setFilter(val, btn) {
+      activeFilter = val
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'))
+      btn.classList.add('active')
+      filterCards()
+    }
+
+    function filterCards() {
+      const q = document.getElementById('searchInput').value.toLowerCase()
+      const filtered = allRestaurants.filter(r => {
+        const matchZona = activeFilter === 'all' || r.zona === activeFilter
+        const matchQ = !q || r.nombre.toLowerCase().includes(q) || r.tipo_cocina?.toLowerCase().includes(q)
+        return matchZona && matchQ
+      })
+      renderCards(filtered)
+    }
+
+    function renderCards(data) {
+      const grid = document.getElementById('restoGrid')
+      grid.innerHTML = ''
+
+      if (data.length === 0) {
+        grid.innerHTML = '<div class="empty-state"><p>No hay resultados para esa búsqueda.</p></div>'
+        return
+      }
+
+      data.forEach(r => {
+        const hasReviews = r.total_resenas > 0
+        const card = document.createElement('div')
+        card.className = `resto-card ${!hasReviews ? 'no-reviews' : ''} fade-in`
+        card.onclick = () => openModal(r)
+
+        const score = hasReviews ? parseFloat(r.avg_general).toFixed(1) : '—'
+        const comida  = r.avg_comida  ? parseFloat(r.avg_comida).toFixed(1)  : '—'
+        const atencion = r.avg_atencion ? parseFloat(r.avg_atencion).toFixed(1) : '—'
+        const postres  = r.avg_postres  ? parseFloat(r.avg_postres).toFixed(1)  : '—'
+
+        card.innerHTML = `
+          <div class="resto-card-header">
+            <div>
+              <h3>${r.nombre}</h3>
+              <p class="resto-meta">${r.zona} · ${r.tipo_cocina}</p>
+            </div>
+            <div class="resto-score">
+              <div class="big-score">${score}</div>
+              <div class="score-label">${hasReviews ? r.total_resenas + ' reseña' + (r.total_resenas !== 1 ? 's' : '') : 'Sin reseñas'}</div>
+            </div>
+          </div>
+          ${hasReviews ? `
+          <div class="resto-bars">
+            <div class="bar-row">
+              <span class="bar-label">Comida</span>
+              <div class="bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${(parseFloat(r.avg_comida)/5)*100}%"></div></div></div>
+              <span class="bar-val">${comida}</span>
+            </div>
+            <div class="bar-row">
+              <span class="bar-label">Atención</span>
+              <div class="bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${(parseFloat(r.avg_atencion)/5)*100}%"></div></div></div>
+              <span class="bar-val">${atencion}</span>
+            </div>
+            ${r.avg_postres ? `
+            <div class="bar-row">
+              <span class="bar-label">Postres</span>
+              <div class="bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${(parseFloat(r.avg_postres)/5)*100}%;background:var(--wine)"></div></div></div>
+              <span class="bar-val">${postres}</span>
+            </div>` : ''}
+          </div>` : '<p style="font-size:0.82rem;color:var(--cream-muted);margin:0.5rem 0">Todavía sin reseñas del grupo.</p>'}
+          <div class="resto-footer">
+            <span>${r.precio_mas_comun ? precioLabel(r.precio_mas_comun) : '—'}</span>
+            ${r.ultima_salida ? `<span>Última visita: ${formatFecha(r.ultima_salida)}</span>` : ''}
+          </div>
+        `
+        grid.appendChild(card)
+      })
+    }
+
+    async function openModal(r) {
+      document.getElementById('modalNombre').textContent = r.nombre
+      document.getElementById('modalMeta').textContent = `${r.zona} · ${r.tipo_cocina}`
+      document.getElementById('modalResenaBtn').href = `resena.html?id=${r.id}`
+
+      const score = r.avg_general ? parseFloat(r.avg_general).toFixed(1) : '—'
+      document.getElementById('modalScore').textContent = score
+      renderStars(document.getElementById('modalStars'), parseFloat(r.avg_general) || 0, 18)
+
+      const setBar = (barId, valId, val) => {
+        const pct = val ? (parseFloat(val)/5)*100 : 0
+        document.getElementById(barId).style.width = pct + '%'
+        document.getElementById(valId).textContent = val ? parseFloat(val).toFixed(1) : '—'
+      }
+      setBar('mBarComida', 'mValComida', r.avg_comida)
+      setBar('mBarAtencion', 'mValAtencion', r.avg_atencion)
+      setBar('mBarPostres', 'mValPostres', r.avg_postres)
+
+      // Tags
+      const tags = document.getElementById('modalTags')
+      tags.innerHTML = ''
+      if (r.precio_mas_comun) tags.innerHTML += `<span class="tag tag-gold">${precioLabel(r.precio_mas_comun)}</span>`
+      if (r.total_resenas) tags.innerHTML += `<span class="tag">${r.total_resenas} reseña${r.total_resenas !== 1 ? 's' : ''}</span>`
+      if (r.ultima_salida) tags.innerHTML += `<span class="tag">Última visita: ${formatFecha(r.ultima_salida)}</span>`
+
+      document.getElementById('modalOverlay').classList.add('open')
+      loadModalResenas(r.id)
+    }
+
+    async function loadModalResenas(restoId) {
+      const container = document.getElementById('modalResenas')
+      container.innerHTML = '<div class="loading">Cargando...</div>'
+
+      const { data, error } = await client
+        .from('resenas')
+        .select('*, usuarios(nombre, apodo)')
+        .eq('restaurante_id', restoId)
+        .order('fecha', { ascending: false })
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>Nadie reseñó este restaurante todavía.</p></div>'
+        return
+      }
+
+      container.innerHTML = ''
+      data.forEach(r => {
+        const nombre = r.usuarios?.apodo || r.usuarios?.nombre || 'Anónimo'
+        const item = document.createElement('div')
+        item.className = 'resena-item'
+        item.innerHTML = `
+          <div class="resena-header">
+            <div class="avatar">${getInitials(nombre)}</div>
+            <span class="nombre">${nombre}</span>
+            <span class="fecha">${formatFecha(r.fecha)}</span>
+          </div>
+          <div class="resena-scores">
+            <span class="resena-score-item">Comida <span>${parseFloat(r.comida).toFixed(1)}</span></span>
+            <span class="resena-score-item">Atención <span>${parseFloat(r.atencion).toFixed(1)}</span></span>
+            ${r.postres ? `<span class="resena-score-item">Postres <span>${parseFloat(r.postres).toFixed(1)}</span></span>` : ''}
+            <span class="resena-score-item">Precio <span>${precioLabel(r.precio_rango)}</span></span>
+          </div>
+          ${r.comentario ? `<p class="resena-comentario">"${r.comentario}"</p>` : ''}
+        `
+        container.appendChild(item)
+      })
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('modalOverlay')) closeModalDirect()
+    }
+
+    function closeModalDirect() {
+      document.getElementById('modalOverlay').classList.remove('open')
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModalDirect()
+    })
+
+    init()
+  </script>
+</body>
+</html>

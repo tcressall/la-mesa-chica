@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La Mesa Chica</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    body { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 420px;
+      padding: 1.5rem;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .login-logo h1 {
+      font-size: 2.2rem;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .login-logo p {
+      font-size: 0.85rem;
+      color: var(--cream-muted);
+    }
+
+    .login-ornament {
+      display: block;
+      margin: 0 auto 1.25rem;
+      width: 32px;
+      height: 1px;
+      background: var(--gold-muted);
+    }
+
+    .login-card {
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+    }
+
+    .login-card h2 {
+      font-size: 1rem;
+      font-family: var(--font-body);
+      font-weight: 500;
+      color: var(--cream);
+      margin-bottom: 4px;
+    }
+
+    .login-card p {
+      font-size: 0.82rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .btn-login {
+      width: 100%;
+      justify-content: center;
+      padding: 11px;
+      font-size: 0.9rem;
+      border-radius: var(--radius-md);
+    }
+
+    .login-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--cream-muted);
+      margin-top: 1rem;
+    }
+
+    .sent-state { display: none; text-align: center; padding: 1rem 0; }
+    .sent-state.show { display: block; }
+    .form-state { display: block; }
+    .form-state.hide { display: none; }
+
+    .sent-icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .sent-state h3 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 6px;
+    }
+
+    .sent-state p {
+      font-size: 0.82rem;
+    }
+
+    .error-msg {
+      font-size: 0.8rem;
+      color: #f5b8a8;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .error-msg.show { display: block; }
+  </style>
+</head>
+<body>
+  <div class="login-wrap">
+    <div class="login-logo">
+      <h1>La Mesa Chica</h1>
+      <span class="login-ornament"></span>
+      <p>El jurado gastronómico más exigente del barrio</p>
+    </div>
+
+    <div class="login-card">
+      <div class="form-state" id="formState">
+        <h2>Ingresar al grupo</h2>
+        <p>Te mandamos un link a tu email para entrar sin contraseña.</p>
+
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="form-input"
+            placeholder="tu@email.com"
+            autocomplete="email"
+          />
+          <span class="error-msg" id="errorMsg"></span>
+        </div>
+
+        <button class="btn btn-primary btn-login" id="loginBtn" onclick="sendMagicLink()">
+          Enviar magic link
+        </button>
+
+        <p class="login-note">Solo miembros del grupo pueden ingresar.</p>
+      </div>
+
+      <div class="sent-state" id="sentState">
+        <span class="sent-icon">✉️</span>
+        <h3>Revisá tu email</h3>
+        <p>Te mandamos un link a <strong id="sentEmail" style="color:var(--gold-light)"></strong>.<br>Hacé clic en el link para entrar.</p>
+        <button class="btn btn-ghost" style="margin-top:1.5rem;width:100%;justify-content:center;" onclick="resetForm()">
+          Usar otro email
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    const client = initSupabase()
+
+    // Si ya hay sesión activa, redirigir al home
+    async function checkExistingSession() {
+      const { data: { session } } = await client.auth.getSession()
+      if (session) window.location.href = '/home.html'
+    }
+    checkExistingSession()
+
+    // Manejar el magic link callback (cuando el usuario vuelve desde el email)
+    client.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        window.location.href = '/home.html'
+      }
+    })
+
+    async function sendMagicLink() {
+      const email = document.getElementById('email').value.trim()
+      const btn = document.getElementById('loginBtn')
+      const errorMsg = document.getElementById('errorMsg')
+
+      errorMsg.classList.remove('show')
+
+      if (!email || !email.includes('@')) {
+        errorMsg.textContent = 'Ingresá un email válido.'
+        errorMsg.classList.add('show')
+        return
+      }
+
+      btn.textContent = 'Enviando...'
+      btn.disabled = true
+
+      const { error } = await client.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin + '/home.html'
+        }
+      })
+
+      if (error) {
+        errorMsg.textContent = 'Hubo un error. Intentá de nuevo.'
+        errorMsg.classList.add('show')
+        btn.textContent = 'Enviar magic link'
+        btn.disabled = false
+        return
+      }
+
+      document.getElementById('sentEmail').textContent = email
+      document.getElementById('formState').classList.add('hide')
+      document.getElementById('sentState').classList.add('show')
+    }
+
+    function resetForm() {
+      document.getElementById('formState').classList.remove('hide')
+      document.getElementById('sentState').classList.remove('show')
+      document.getElementById('email').value = ''
+      document.getElementById('loginBtn').textContent = 'Enviar magic link'
+      document.getElementById('loginBtn').disabled = false
+    }
+
+    // Enter para enviar
+    document.getElementById('email').addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendMagicLink()
+    })
+  </script>
+</body>
+</html>

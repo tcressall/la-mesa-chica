@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio — La Mesa Chica</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .hero {
+      padding: 2.5rem 0 1.5rem;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 2rem;
+    }
+
+    .hero-greeting {
+      font-size: 0.82rem;
+      color: var(--cream-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .hero h1 { margin-bottom: 4px; }
+    .hero p  { font-size: 0.85rem; }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .section-header h2 { font-size: 1.1rem; }
+
+    /* Próxima salida highlight */
+    .proxima-card {
+      background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-raised) 100%);
+      border: 0.5px solid var(--gold-muted);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      text-decoration: none;
+      transition: border-color 0.2s;
+    }
+
+    .proxima-card:hover { border-color: var(--gold); }
+
+    .proxima-date {
+      text-align: center;
+      flex-shrink: 0;
+      background: var(--gold-subtle);
+      border: 0.5px solid var(--gold-muted);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      min-width: 64px;
+    }
+
+    .proxima-date .day {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .proxima-date .month {
+      font-size: 0.7rem;
+      color: var(--gold-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .proxima-info h3 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--cream);
+      margin-bottom: 3px;
+    }
+
+    .proxima-info p { font-size: 0.82rem; }
+
+    .proxima-arrow {
+      margin-left: auto;
+      color: var(--gold-muted);
+      font-size: 1.2rem;
+    }
+
+    /* Top restaurantes */
+    .rank-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.9rem 1.25rem;
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      transition: all 0.15s;
+      margin-bottom: 6px;
+    }
+
+    .rank-item:hover { border-color: var(--border-hover); background: var(--bg-raised); }
+
+    .rank-num {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--gold-muted);
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .rank-num.top { color: var(--gold); }
+
+    .rank-info { flex: 1; min-width: 0; }
+    .rank-info h3 { font-family: var(--font-body); font-size: 0.9rem; color: var(--cream); margin-bottom: 2px; }
+    .rank-info p  { font-size: 0.78rem; }
+
+    .rank-score {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      flex-shrink: 0;
+    }
+
+    .rank-score .score {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .rank-score .stars { margin-top: 3px; }
+
+    /* Actividad reciente */
+    .activity-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 0.75rem 0;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-avatar { flex-shrink: 0; }
+
+    .activity-text { font-size: 0.85rem; color: var(--cream-muted); line-height: 1.5; }
+    .activity-text strong { color: var(--cream); font-weight: 500; }
+    .activity-text .resto { color: var(--gold); }
+    .activity-time { font-size: 0.75rem; color: var(--cream-faint); margin-top: 2px; }
+
+    /* Miembros del grupo */
+    .members-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .member-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: 30px;
+      padding: 5px 12px 5px 5px;
+      font-size: 0.82rem;
+      color: var(--cream-muted);
+      transition: border-color 0.15s;
+    }
+
+    .member-chip:hover { border-color: var(--border-hover); }
+    .member-chip .avatar { width: 26px; height: 26px; font-size: 10px; }
+    .member-chip .name { color: var(--cream); }
+    .member-chip .badge { margin-left: 2px; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="home.html" class="navbar-brand">La Mesa Chica</a>
+    <ul class="nav-links">
+      <li><a href="home.html" class="active">Inicio</a></li>
+      <li><a href="restaurantes.html">Restaurantes</a></li>
+      <li><a href="sesiones.html">Sesiones</a></li>
+    </ul>
+    <a href="perfil.html" class="nav-avatar" id="navAvatar">?</a>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="container">
+
+      <!-- Hero -->
+      <div class="hero fade-in">
+        <p class="hero-greeting">Bienvenido de nuevo</p>
+        <h1 id="heroName">Cargando...</h1>
+        <p id="heroSub">¿Qué comemos esta semana?</p>
+      </div>
+
+      <!-- Métricas -->
+      <div class="section">
+        <div class="section-header">
+          <h2>El grupo en números</h2>
+        </div>
+        <div class="grid-4 stagger" id="metricsGrid">
+          <div class="metric-card">
+            <div class="metric-num" id="mSalidas">—</div>
+            <div class="metric-label">Salidas realizadas</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num" id="mResenas">—</div>
+            <div class="metric-label">Reseñas escritas</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num" id="mScore" style="font-size:1.4rem">—</div>
+            <div class="metric-label">Mejor puntuación</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-num" id="mFav" style="font-size:1rem;line-height:1.3">—</div>
+            <div class="metric-label">Favorito del grupo</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Próxima salida -->
+      <div class="section" id="proximaSection" style="display:none">
+        <div class="section-header">
+          <h2>Próxima salida</h2>
+          <a href="sesiones.html" style="font-size:0.8rem;color:var(--gold-muted)">Ver todas →</a>
+        </div>
+        <a href="sesiones.html" class="proxima-card" id="proximaCard">
+          <div class="proxima-date">
+            <div class="day" id="proximaDia">—</div>
+            <div class="month" id="proximaMes">—</div>
+          </div>
+          <div class="proxima-info">
+            <h3 id="proximaResto">Por confirmar</h3>
+            <p id="proximaInfo">—</p>
+          </div>
+          <span class="proxima-arrow">→</span>
+        </a>
+      </div>
+
+      <!-- Top restaurantes -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Ranking del grupo</h2>
+          <a href="restaurantes.html" style="font-size:0.8rem;color:var(--gold-muted)">Ver completo →</a>
+        </div>
+        <div id="rankingList">
+          <div class="loading">Cargando ranking...</div>
+        </div>
+      </div>
+
+      <!-- Actividad reciente -->
+      <div class="section">
+        <div class="section-header">
+          <h2>Actividad reciente</h2>
+        </div>
+        <div class="card" id="activityList">
+          <div class="loading">Cargando actividad...</div>
+        </div>
+      </div>
+
+      <!-- Miembros -->
+      <div class="section">
+        <div class="section-header">
+          <h2>El grupo</h2>
+        </div>
+        <div class="members-row stagger" id="membersList">
+          <div class="loading">Cargando miembros...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const client = initSupabase()
+    let userProfile = null
+
+    async function init() {
+      const session = await requireAuth(client)
+      if (!session) return
+
+      userProfile = await getUserProfile(client, session.user.id)
+
+      // Navbar avatar
+      const navAvatar = document.getElementById('navAvatar')
+      navAvatar.textContent = getInitials(userProfile?.apodo || userProfile?.nombre || '')
+
+      // Hero
+      const nombre = userProfile?.apodo || userProfile?.nombre || 'Miembro'
+      document.getElementById('heroName').textContent = `Hola, ${nombre}`
+
+      // Cargar todo en paralelo
+      await Promise.all([
+        loadMetrics(),
+        loadRanking(),
+        loadActivity(),
+        loadMembers()
+      ])
+    }
+
+    async function loadMetrics() {
+      const { data, error } = await client
+        .from('metricas_grupo')
+        .select('*')
+        .single()
+
+      if (error || !data) return
+
+      document.getElementById('mSalidas').textContent = data.total_salidas || 0
+      document.getElementById('mResenas').textContent = data.total_resenas || 0
+      document.getElementById('mScore').textContent = data.mejor_puntuado_score
+        ? parseFloat(data.mejor_puntuado_score).toFixed(1) : '—'
+      document.getElementById('mFav').textContent = data.restaurante_favorito || '—'
+
+      // Próxima salida
+      if (data.proxima_salida) {
+        const fecha = new Date(data.proxima_salida + 'T12:00:00')
+        document.getElementById('proximaDia').textContent = fecha.getDate()
+        document.getElementById('proximaMes').textContent =
+          fecha.toLocaleDateString('es-AR', { month: 'short' }).replace('.', '')
+        document.getElementById('proximaResto').textContent =
+          data.proxima_salida_restaurante || 'Restaurante por confirmar'
+        document.getElementById('proximaInfo').textContent =
+          formatFecha(data.proxima_salida)
+        document.getElementById('proximaSection').style.display = 'block'
+      }
+    }
+
+    async function loadRanking() {
+      const { data, error } = await client
+        .from('restaurantes_ranking')
+        .select('*')
+        .eq('activo', true)
+        .gt('total_resenas', 0)
+        .order('avg_general', { ascending: false })
+        .limit(5)
+
+      const container = document.getElementById('rankingList')
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>Todavía no hay reseñas. ¡Sean los primeros!</p></div>'
+        return
+      }
+
+      container.innerHTML = ''
+      data.forEach((r, i) => {
+        const item = document.createElement('a')
+        item.href = `restaurantes.html#${r.id}`
+        item.className = 'rank-item'
+        item.innerHTML = `
+          <span class="rank-num ${i < 3 ? 'top' : ''}">${i + 1}</span>
+          <div class="rank-info">
+            <h3>${r.nombre}</h3>
+            <p>${r.zona} · ${r.tipo_cocina}</p>
+          </div>
+          <div class="rank-score">
+            <span class="score">${parseFloat(r.avg_general).toFixed(1)}</span>
+            <div class="stars stars-display" id="stars-rank-${i}"></div>
+          </div>
+        `
+        container.appendChild(item)
+        renderStars(document.getElementById(`stars-rank-${i}`), parseFloat(r.avg_general), 13)
+      })
+    }
+
+    async function loadActivity() {
+      const { data, error } = await client
+        .from('resenas')
+        .select('*, usuarios(apodo, nombre), restaurantes(nombre)')
+        .order('created_at', { ascending: false })
+        .limit(6)
+
+      const container = document.getElementById('activityList')
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No hay actividad reciente aún.</p></div>'
+        return
+      }
+
+      container.innerHTML = ''
+      data.forEach(r => {
+        const nombre = r.usuarios?.apodo || r.usuarios?.nombre || 'Alguien'
+        const resto = r.restaurantes?.nombre || 'un restaurante'
+        const item = document.createElement('div')
+        item.className = 'activity-item'
+        item.innerHTML = `
+          <div class="activity-avatar">
+            <div class="avatar">${getInitials(nombre)}</div>
+          </div>
+          <div>
+            <div class="activity-text">
+              <strong>${nombre}</strong> reseñó <span class="resto">${resto}</span>
+              — ${parseFloat(r.comida).toFixed(1)} en comida
+            </div>
+            <div class="activity-time">${formatFecha(r.fecha)}</div>
+          </div>
+        `
+        container.appendChild(item)
+      })
+    }
+
+    async function loadMembers() {
+      const { data, error } = await client
+        .from('usuarios')
+        .select('*')
+        .order('nombre')
+
+      const container = document.getElementById('membersList')
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No hay miembros cargados aún.</p></div>'
+        return
+      }
+
+      container.innerHTML = ''
+      data.forEach(u => {
+        const chip = document.createElement('div')
+        chip.className = 'member-chip'
+        chip.innerHTML = `
+          <div class="avatar">${getInitials(u.apodo || u.nombre)}</div>
+          <span class="name">${u.apodo || u.nombre}</span>
+          ${u.rol === 'admin' ? '<span class="badge badge-admin">admin</span>' : ''}
+          ${u.estado === 'paused' ? '<span class="badge badge-paused">pausa</span>' : ''}
+        `
+        container.appendChild(chip)
+      })
+    }
+
+    init()
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+# Netlify config para La Mesa Chica
+# Redirige todas las rutas al archivo correspondiente
+# y maneja el callback del magic link
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  conditions = {Role = ["anonymous"]}
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+    X-Content-Type-Options = "nosniff"

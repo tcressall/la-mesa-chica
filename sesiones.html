@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sesiones — La Mesa Chica</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .proxima-hero {
+      background: var(--bg-surface);
+      border: 0.5px solid var(--gold-muted);
+      border-radius: var(--radius-xl);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+
+    .proxima-hero-date {
+      text-align: center;
+      background: var(--gold-subtle);
+      border: 0.5px solid var(--gold-muted);
+      border-radius: var(--radius-lg);
+      padding: 1rem 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .proxima-hero-date .day {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    .proxima-hero-date .month {
+      font-size: 0.8rem;
+      color: var(--gold-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+
+    .proxima-hero-date .year {
+      font-size: 0.75rem;
+      color: var(--cream-muted);
+    }
+
+    .proxima-hero-info { flex: 1; min-width: 200px; }
+    .proxima-hero-info h2 { margin-bottom: 4px; font-size: 1.4rem; }
+    .proxima-hero-info .sub { font-size: 0.85rem; color: var(--cream-muted); margin-bottom: 1rem; }
+
+    .asistentes-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 0.75rem; }
+
+    .asistente-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-raised);
+      border: 0.5px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 10px 3px 4px;
+      font-size: 0.78rem;
+      color: var(--cream-muted);
+    }
+
+    .asistente-chip .avatar { width: 22px; height: 22px; font-size: 9px; }
+
+    /* Historial */
+    .salida-item {
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 8px;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+
+    .salida-item:hover { border-color: var(--border-hover); background: var(--bg-raised); }
+
+    .salida-fecha-mini {
+      text-align: center;
+      background: var(--bg-raised);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px;
+    }
+
+    .salida-fecha-mini .day { font-family: var(--font-display); font-size: 1.3rem; color: var(--cream); line-height: 1; }
+    .salida-fecha-mini .month { font-size: 0.65rem; color: var(--cream-muted); text-transform: uppercase; }
+
+    .salida-info h3 { font-family: var(--font-body); font-size: 0.92rem; color: var(--cream); font-weight: 500; margin-bottom: 3px; }
+    .salida-info p  { font-size: 0.78rem; color: var(--cream-muted); }
+
+    .salida-meta { text-align: right; }
+    .salida-meta .precio { font-size: 0.85rem; color: var(--gold); font-weight: 500; }
+    .salida-meta .personas { font-size: 0.75rem; color: var(--cream-muted); margin-top: 2px; }
+
+    .empty-proxima {
+      text-align: center;
+      padding: 2rem;
+      border: 0.5px dashed var(--border);
+      border-radius: var(--radius-xl);
+      margin-bottom: 2rem;
+    }
+
+    .empty-proxima p { margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="home.html" class="navbar-brand">La Mesa Chica</a>
+    <ul class="nav-links">
+      <li><a href="home.html">Inicio</a></li>
+      <li><a href="restaurantes.html">Restaurantes</a></li>
+      <li><a href="sesiones.html" class="active">Sesiones</a></li>
+    </ul>
+    <a href="perfil.html" class="nav-avatar" id="navAvatar">?</a>
+  </nav>
+
+  <div class="page-wrapper">
+    <div class="container">
+
+      <div class="page-title">
+        <h1>Sesiones</h1>
+        <p>Próxima salida e historial del grupo</p>
+      </div>
+
+      <!-- Próxima salida -->
+      <div class="section-header" style="margin-bottom:1rem">
+        <h2>Próxima salida</h2>
+        <span id="adminAddBtn" style="display:none">
+          <a href="admin.html" class="btn btn-ghost" style="font-size:0.8rem;padding:5px 12px">+ Agregar</a>
+        </span>
+      </div>
+      <div id="proximaContainer">
+        <div class="loading">Cargando...</div>
+      </div>
+
+      <!-- Historial -->
+      <div class="section" style="margin-top:2rem">
+        <div class="section-header" style="margin-bottom:1rem">
+          <h2>Historial</h2>
+          <span id="totalSalidas" style="font-size:0.82rem;color:var(--cream-muted)"></span>
+        </div>
+        <div id="historialList">
+          <div class="loading">Cargando historial...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/utils.js"></script>
+  <script>
+    const client = initSupabase()
+    let allUsers = {}
+
+    async function init() {
+      const session = await requireAuth(client)
+      if (!session) return
+
+      const profile = await getUserProfile(client, session.user.id)
+      document.getElementById('navAvatar').textContent = getInitials(profile?.apodo || profile?.nombre || '')
+
+      if (isAdmin(profile)) {
+        document.getElementById('adminAddBtn').style.display = 'inline'
+      }
+
+      // Cargar usuarios para resolver nombres de asistentes
+      const { data: usuarios } = await client.from('usuarios').select('id, nombre, apodo')
+      if (usuarios) {
+        usuarios.forEach(u => { allUsers[u.id] = u })
+      }
+
+      await Promise.all([loadProxima(), loadHistorial()])
+    }
+
+    async function loadProxima() {
+      const container = document.getElementById('proximaContainer')
+
+      const { data, error } = await client
+        .from('salidas')
+        .select('*, restaurantes(nombre, zona, tipo_cocina)')
+        .eq('confirmada', false)
+        .gte('fecha', new Date().toISOString().split('T')[0])
+        .order('fecha', { ascending: true })
+        .limit(1)
+        .single()
+
+      if (error || !data) {
+        container.innerHTML = `
+          <div class="empty-proxima">
+            <p style="font-size:1.5rem">🍽️</p>
+            <p>No hay próxima salida confirmada todavía.</p>
+            <p style="font-size:0.8rem;color:var(--cream-muted)">Un admin puede agregarla desde el panel.</p>
+          </div>
+        `
+        return
+      }
+
+      const fecha = new Date(data.fecha + 'T12:00:00')
+      const dia   = fecha.getDate()
+      const mes   = fecha.toLocaleDateString('es-AR', { month: 'short' }).replace('.', '')
+      const anio  = fecha.getFullYear()
+
+      const asistentesHTML = (data.asistentes || []).map(uid => {
+        const u = allUsers[uid]
+        if (!u) return ''
+        const nombre = u.apodo || u.nombre || '?'
+        return `<div class="asistente-chip"><div class="avatar">${getInitials(nombre)}</div><span>${nombre}</span></div>`
+      }).join('')
+
+      container.innerHTML = `
+        <div class="proxima-hero fade-in">
+          <div class="proxima-hero-date">
+            <div class="day">${dia}</div>
+            <div class="month">${mes}</div>
+            <div class="year">${anio}</div>
+          </div>
+          <div class="proxima-hero-info">
+            <h2>${data.restaurantes?.nombre || 'Por confirmar'}</h2>
+            <p class="sub">${data.restaurantes ? `${data.restaurantes.zona} · ${data.restaurantes.tipo_cocina}` : '—'}</p>
+            ${data.precio_rango ? `<span class="tag tag-gold">${precioLabel(data.precio_rango)} estimado</span>` : ''}
+            ${data.notas ? `<p style="margin-top:0.75rem;font-size:0.85rem;color:var(--cream-muted)">${data.notas}</p>` : ''}
+            ${asistentesHTML ? `
+              <div style="margin-top:1rem">
+                <p style="font-size:0.75rem;color:var(--cream-muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.06em">Asistentes confirmados</p>
+                <div class="asistentes-row">${asistentesHTML}</div>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `
+    }
+
+    async function loadHistorial() {
+      const { data, error } = await client
+        .from('salidas')
+        .select('*, restaurantes(nombre, zona, tipo_cocina)')
+        .eq('confirmada', true)
+        .order('fecha', { ascending: false })
+
+      const container = document.getElementById('historialList')
+
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state"><p>No hay salidas registradas todavía.</p></div>'
+        return
+      }
+
+      document.getElementById('totalSalidas').textContent = `${data.length} salida${data.length !== 1 ? 's' : ''}`
+
+      container.innerHTML = ''
+      data.forEach(s => {
+        const fecha = new Date(s.fecha + 'T12:00:00')
+        const item = document.createElement('div')
+        item.className = 'salida-item fade-in'
+
+        const asistentes = (s.asistentes || []).length
+        const precio = s.precio_por_persona
+          ? `USD ${parseFloat(s.precio_por_persona).toFixed(0)}`
+          : (s.precio_rango ? precioLabel(s.precio_rango) : '—')
+
+        item.innerHTML = `
+          <div class="salida-fecha-mini">
+            <div class="day">${fecha.getDate()}</div>
+            <div class="month">${fecha.toLocaleDateString('es-AR', { month: 'short' }).replace('.','')}</div>
+          </div>
+          <div class="salida-info">
+            <h3>${s.restaurantes?.nombre || 'Restaurante sin registrar'}</h3>
+            <p>${s.restaurantes ? `${s.restaurantes.zona} · ${s.restaurantes.tipo_cocina}` : '—'}${s.notas ? ' · ' + s.notas : ''}</p>
+          </div>
+          <div class="salida-meta">
+            <div class="precio">${precio}</div>
+            <div class="personas">${asistentes} asistente${asistentes !== 1 ? 's' : ''}</div>
+          </div>
+        `
+        container.appendChild(item)
+      })
+    }
+
+    init()
+  </script>
+</body>
+</html>
