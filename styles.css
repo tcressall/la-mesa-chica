@@ -5,29 +5,29 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap');
 
 :root {
-  /* Colores */
-  --bg-base:        #0e0b07;
-  --bg-surface:     #1a1510;
-  --bg-raised:      #221c13;
-  --bg-hover:       #2a2218;
+  /* Colores — mayor contraste */
+  --bg-base:        #12100a;
+  --bg-surface:     #1e1912;
+  --bg-raised:      #272018;
+  --bg-hover:       #302820;
 
-  --gold:           #C9873A;
-  --gold-light:     #E8C87A;
-  --gold-muted:     rgba(201, 135, 58, 0.35);
-  --gold-subtle:    rgba(201, 135, 58, 0.1);
+  --gold:           #D4923F;
+  --gold-light:     #F0D080;
+  --gold-muted:     rgba(212, 146, 63, 0.45);
+  --gold-subtle:    rgba(212, 146, 63, 0.13);
 
-  --cream:          rgba(255, 220, 160, 0.85);
-  --cream-muted:    rgba(255, 220, 160, 0.45);
-  --cream-faint:    rgba(255, 220, 160, 0.15);
-  --cream-ghost:    rgba(255, 220, 160, 0.07);
+  --cream:          rgba(255, 228, 172, 0.95);
+  --cream-muted:    rgba(255, 228, 172, 0.62);
+  --cream-faint:    rgba(255, 228, 172, 0.22);
+  --cream-ghost:    rgba(255, 228, 172, 0.09);
 
-  --wine:           #8C3A2E;
-  --wine-light:     rgba(140, 58, 46, 0.25);
+  --wine:           #A04535;
+  --wine-light:     rgba(160, 69, 53, 0.28);
   --green-dark:     #2C4A3A;
   --green-light:    rgba(44, 74, 58, 0.3);
 
-  --border:         rgba(255, 220, 160, 0.1);
-  --border-hover:   rgba(201, 135, 58, 0.35);
+  --border:         rgba(255, 228, 172, 0.14);
+  --border-hover:   rgba(212, 146, 63, 0.45);
 
   /* Tipografía */
   --font-display:   'Playfair Display', Georgia, serif;
@@ -50,7 +50,8 @@ body {
   background: var(--bg-base);
   color: var(--cream);
   min-height: 100vh;
-  line-height: 1.6;
+  line-height: 1.65;
+  font-size: 16px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -61,10 +62,10 @@ body {
 
 /* ── Tipografía ── */
 h1, h2, h3 { font-family: var(--font-display); font-weight: 500; color: var(--gold-light); line-height: 1.2; }
-h1 { font-size: 2rem; }
-h2 { font-size: 1.4rem; }
-h3 { font-size: 1.1rem; }
-p  { color: var(--cream-muted); font-size: 0.9rem; }
+h1 { font-size: 2.2rem; }
+h2 { font-size: 1.55rem; }
+h3 { font-size: 1.2rem; }
+p  { color: var(--cream-muted); font-size: 0.97rem; }
 a  { color: var(--gold); text-decoration: none; }
 a:hover { color: var(--gold-light); }
 
@@ -119,7 +120,7 @@ a:hover { color: var(--gold-light); }
 }
 
 .nav-links a {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--cream-muted);
   padding: 6px 14px;
   border-radius: var(--radius-sm);
@@ -180,7 +181,7 @@ a:hover { color: var(--gold-light); }
 }
 
 .metric-num {
-  font-size: 1.75rem;
+  font-size: 1.9rem;
   font-weight: 500;
   color: var(--gold);
   line-height: 1;
@@ -207,7 +208,7 @@ a:hover { color: var(--gold-light); }
   gap: 6px;
   padding: 9px 20px;
   border-radius: var(--radius-sm);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-family: var(--font-body);
   font-weight: 500;
   cursor: pointer;
