@@ -28,14 +28,14 @@
     .rating-row:focus-within { border-color: var(--gold-muted); }
 
     .rating-row-info { flex: 1; }
-    .rating-row-info .label { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
-    .rating-row-info .sublabel { font-size: 0.75rem; color: var(--cream-muted); }
+    .rating-row-info .label { font-size: 0.9rem; font-weight: 500; color: var(--cream); }
+    .rating-row-info .sublabel { font-size: 0.78rem; color: var(--cream-muted); }
 
     .rating-stars { display: flex; gap: 4px; align-items: center; }
-    .rating-val { font-size: 0.85rem; color: var(--gold); width: 28px; text-align: right; flex-shrink: 0; }
+    .rating-val { font-size: 0.9rem; color: var(--gold); width: 28px; text-align: right; flex-shrink: 0; }
 
     .optional-label {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       color: var(--cream-muted);
       background: var(--cream-ghost);
       border: 0.5px solid var(--border);
@@ -45,7 +45,7 @@
     }
 
     .form-section-title {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: var(--cream-muted);
       text-transform: uppercase;
       letter-spacing: 0.07em;
@@ -63,7 +63,7 @@
       flex: 1;
       justify-content: center;
       padding: 12px;
-      font-size: 0.95rem;
+      font-size: 0.97rem;
     }
 
     .resto-selector-row {
@@ -96,7 +96,6 @@
           <p>Tu opinión cuenta en el ranking del grupo</p>
         </div>
 
-        <!-- Selector de restaurante -->
         <p class="form-section-title">Restaurante</p>
         <div class="form-group">
           <label class="form-label" for="restoSelect">¿Qué restaurante reseñás?</label>
@@ -105,17 +104,15 @@
           </select>
         </div>
 
-        <div id="existingWarning" style="display:none;font-size:0.82rem;color:#f5b8a8;background:var(--wine-light);border:0.5px solid rgba(140,58,46,0.5);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:1rem">
+        <div id="existingWarning" style="display:none;font-size:0.85rem;color:#f5b8a8;background:var(--wine-light);border:0.5px solid rgba(140,58,46,0.5);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:1rem">
           Ya tenés una reseña para este restaurante. Guardar esta va a reemplazarla.
         </div>
 
-        <!-- Fecha -->
         <div class="form-group">
           <label class="form-label" for="fechaInput">Fecha de la visita</label>
           <input type="date" class="form-input" id="fechaInput">
         </div>
 
-        <!-- Ratings -->
         <p class="form-section-title">Puntajes</p>
 
         <div class="rating-group">
@@ -137,6 +134,15 @@
             <span class="rating-val" id="valAtencion">—</span>
           </div>
 
+          <div class="rating-row" id="rowAmbiente">
+            <div class="rating-row-info">
+              <div class="label">Ambiente</div>
+              <div class="sublabel">Decoración, música, onda del lugar</div>
+            </div>
+            <div class="rating-stars" id="starsAmbiente"></div>
+            <span class="rating-val" id="valAmbiente">—</span>
+          </div>
+
           <div class="rating-row" id="rowPostres">
             <div class="rating-row-info">
               <div class="label">Postres <span class="optional-label">opcional</span></div>
@@ -147,7 +153,6 @@
           </div>
         </div>
 
-        <!-- Precio -->
         <p class="form-section-title">Precio por persona</p>
         <div class="price-grid" id="priceGrid">
           <div class="price-chip" data-val="20-30" onclick="selectPrice(this)">
@@ -182,13 +187,11 @@
           </div>
         </div>
 
-        <!-- Comentario -->
         <p class="form-section-title" style="margin-top:1.5rem">Comentario</p>
         <div class="form-group">
           <textarea class="form-textarea" id="comentario" rows="3" placeholder="¿Qué destacarías de esta visita? (opcional)"></textarea>
         </div>
 
-        <!-- Submit -->
         <div class="submit-area">
           <button class="btn btn-ghost" onclick="window.history.back()">Cancelar</button>
           <button class="btn btn-primary btn-submit" id="submitBtn" onclick="submitResena()">Guardar reseña</button>
@@ -206,7 +209,7 @@
     const client = initSupabase()
     let userId = null
     let selectedPrice = null
-    let ratingComida, ratingAtencion, ratingPostres
+    let ratingComida, ratingAtencion, ratingAmbiente, ratingPostres
     let existingResenaId = null
 
     async function init() {
@@ -217,13 +220,10 @@
       const profile = await getUserProfile(client, userId)
       document.getElementById('navAvatar').textContent = getInitials(profile?.apodo || profile?.nombre || '')
 
-      // Fecha por defecto: hoy
       document.getElementById('fechaInput').value = new Date().toISOString().split('T')[0]
 
-      // Cargar restaurantes
       await loadRestaurants()
 
-      // Si viene con ?id=..., preseleccionar
       const params = new URLSearchParams(window.location.search)
       const preId = params.get('id')
       if (preId) {
@@ -231,9 +231,9 @@
         onRestoChange()
       }
 
-      // Montar widgets de estrellas
       ratingComida   = buildRatingWidget(document.getElementById('starsComida'),   'comida',   v => { document.getElementById('valComida').textContent = v.toFixed(1) })
       ratingAtencion = buildRatingWidget(document.getElementById('starsAtencion'), 'atencion', v => { document.getElementById('valAtencion').textContent = v.toFixed(1) })
+      ratingAmbiente = buildRatingWidget(document.getElementById('starsAmbiente'), 'ambiente', v => { document.getElementById('valAmbiente').textContent = v.toFixed(1) })
       ratingPostres  = buildRatingWidget(document.getElementById('starsPostres'),  'postres',  v => { document.getElementById('valPostres').textContent = v.toFixed(1) })
     }
 
@@ -262,10 +262,9 @@
 
       if (!restoId || !userId) return
 
-      // Verificar si ya tiene reseña
       const { data } = await client
         .from('resenas')
-        .select('id, comida, atencion, postres, precio_rango, comentario, fecha')
+        .select('id, comida, atencion, ambiente, postres, precio_rango, comentario, fecha')
         .eq('restaurante_id', restoId)
         .eq('usuario_id', userId)
         .single()
@@ -273,13 +272,14 @@
       if (data) {
         existingResenaId = data.id
         document.getElementById('existingWarning').style.display = 'block'
-        // Precargar valores existentes
         if (ratingComida)   ratingComida.setValue(parseFloat(data.comida))
         if (ratingAtencion) ratingAtencion.setValue(parseFloat(data.atencion))
-        if (ratingPostres && data.postres) ratingPostres.setValue(parseFloat(data.postres))
+        if (ratingAmbiente && data.ambiente) ratingAmbiente.setValue(parseFloat(data.ambiente))
+        if (ratingPostres && data.postres)   ratingPostres.setValue(parseFloat(data.postres))
         document.getElementById('valComida').textContent   = parseFloat(data.comida).toFixed(1)
         document.getElementById('valAtencion').textContent = parseFloat(data.atencion).toFixed(1)
-        if (data.postres) document.getElementById('valPostres').textContent = parseFloat(data.postres).toFixed(1)
+        if (data.ambiente) document.getElementById('valAmbiente').textContent = parseFloat(data.ambiente).toFixed(1)
+        if (data.postres)  document.getElementById('valPostres').textContent  = parseFloat(data.postres).toFixed(1)
         if (data.precio_rango) {
           const chip = document.querySelector(`.price-chip[data-val="${data.precio_rango}"]`)
           if (chip) selectPrice(chip)
@@ -299,15 +299,16 @@
       const restoId = document.getElementById('restoSelect').value
       const comida   = ratingComida?.getValue()
       const atencion = ratingAtencion?.getValue()
+      const ambiente = ratingAmbiente?.getValue()
       const postres  = ratingPostres?.getValue() || null
       const fecha    = document.getElementById('fechaInput').value
       const comentario = document.getElementById('comentario').value.trim()
       const btn = document.getElementById('submitBtn')
 
-      // Validaciones
       if (!restoId) { showToast('Elegí un restaurante', 'error'); return }
       if (!comida || comida === 0) { showToast('Calificá la comida', 'error'); return }
       if (!atencion || atencion === 0) { showToast('Calificá la atención', 'error'); return }
+      if (!ambiente || ambiente === 0) { showToast('Calificá el ambiente', 'error'); return }
       if (!selectedPrice) { showToast('Elegí un rango de precio', 'error'); return }
       if (!fecha) { showToast('Ingresá la fecha', 'error'); return }
 
@@ -319,6 +320,7 @@
         usuario_id: userId,
         comida,
         atencion,
+        ambiente,
         postres,
         precio_rango: selectedPrice,
         comentario: comentario || null,
@@ -327,11 +329,9 @@
 
       let error
       if (existingResenaId) {
-        // Actualizar reseña existente
         const res = await client.from('resenas').update(payload).eq('id', existingResenaId)
         error = res.error
       } else {
-        // Nueva reseña
         const res = await client.from('resenas').insert(payload)
         error = res.error
       }
