@@ -309,6 +309,7 @@
     function togglePasswordForm() {
       const form = document.getElementById('passwordForm')
       form.classList.toggle('open')
+      if (form.classList.contains('open')) setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100)
       document.getElementById('newPass').value = ''
       document.getElementById('confirmPass').value = ''
       document.getElementById('passwordMsg').classList.remove('show')
