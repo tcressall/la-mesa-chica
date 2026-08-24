@@ -445,8 +445,9 @@
           <div class="avatar">${getInitials(nombre)}</div>
           <span>${nombre}</span>
         `
-        chip.addEventListener('click', () => {
-          chip.classList.toggle('checked')
+        const checkbox = chip.querySelector('input')
+        checkbox.addEventListener('change', () => {
+          chip.classList.toggle('checked', checkbox.checked)
         })
         group.appendChild(chip)
       })
