@@ -63,7 +63,6 @@
 
     .edit-row .form-group { flex: 1; min-width: 160px; margin-bottom: 0; }
 
-    /* Mis reseñas */
     .mi-resena-card {
       background: var(--bg-surface);
       border: 0.5px solid var(--border);
@@ -132,7 +131,6 @@
 
     .delete-btn:hover { color: #f5b8a8; }
 
-    /* Sección cambio de contraseña */
     .password-section {
       margin-top: 2.5rem;
       padding: 1.5rem;
@@ -180,7 +178,6 @@
   <div class="page-wrapper">
     <div class="container" style="max-width:720px">
 
-      <!-- Header del perfil -->
       <div class="profile-header fade-in">
         <div class="profile-avatar-lg" id="profileAvatar">?</div>
         <div class="profile-info">
@@ -197,7 +194,6 @@
             <button class="btn btn-danger" style="font-size:0.85rem;padding:6px 14px" onclick="signOut(client)">Cerrar sesión</button>
           </div>
 
-          <!-- Form edición nombre/apodo -->
           <div class="edit-form" id="editForm">
             <div class="divider"></div>
             <div class="edit-row">
@@ -218,7 +214,6 @@
         </div>
       </div>
 
-      <!-- Mis reseñas -->
       <div class="section-header" style="margin-bottom:1rem">
         <h2>Mis reseñas</h2>
         <a href="resena.html" class="btn btn-primary" style="font-size:0.82rem;padding:6px 14px">+ Nueva reseña</a>
@@ -227,7 +222,6 @@
         <div class="loading">Cargando reseñas...</div>
       </div>
 
-      <!-- Mis salidas -->
       <div class="section" style="margin-top:2rem">
         <div class="section-header" style="margin-bottom:1rem">
           <h2>Mis salidas</h2>
@@ -237,7 +231,6 @@
         </div>
       </div>
 
-      <!-- Cambio de contraseña -->
       <div class="password-section">
         <h2>Contraseña</h2>
         <p>Cambiá la contraseña que te asignaron por una tuya.</p>
@@ -413,6 +406,7 @@
           <div class="mi-resena-scores">
             <span class="score-pill">Comida <span>${parseFloat(r.comida).toFixed(1)}</span></span>
             <span class="score-pill">Atención <span>${parseFloat(r.atencion).toFixed(1)}</span></span>
+            ${r.ambiente ? `<span class="score-pill">Ambiente <span>${parseFloat(r.ambiente).toFixed(1)}</span></span>` : ''}
             ${r.postres ? `<span class="score-pill">Postres <span>${parseFloat(r.postres).toFixed(1)}</span></span>` : ''}
             <span class="score-pill">Precio <span>${precioLabel(r.precio_rango)}</span></span>
           </div>
@@ -427,7 +421,7 @@
         `
         container.appendChild(card)
 
-        const vals = [r.comida, r.atencion, r.postres].filter(Boolean).map(Number)
+        const vals = [r.comida, r.atencion, r.ambiente, r.postres].filter(Boolean).map(Number)
         const avg = vals.reduce((a,b) => a+b, 0) / vals.length
         renderStars(document.getElementById(`stars-resena-${r.id}`), avg, 14)
       })
