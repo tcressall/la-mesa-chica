@@ -15,7 +15,7 @@
     }
 
     .filter-btn {
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       padding: 5px 14px;
       border-radius: 20px;
       border: 0.5px solid var(--border);
@@ -35,7 +35,6 @@
       max-width: 280px;
     }
 
-    /* Tarjeta restaurante */
     .resto-card {
       background: var(--bg-surface);
       border: 0.5px solid var(--border);
@@ -58,13 +57,13 @@
 
     .resto-card-header h3 {
       font-family: var(--font-body);
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 500;
       color: var(--cream);
       margin-bottom: 3px;
     }
 
-    .resto-meta { font-size: 0.78rem; color: var(--cream-muted); }
+    .resto-meta { font-size: 0.8rem; color: var(--cream-muted); }
 
     .resto-score {
       text-align: right;
@@ -73,13 +72,13 @@
 
     .resto-score .big-score {
       font-family: var(--font-display);
-      font-size: 1.5rem;
+      font-size: 1.6rem;
       color: var(--gold);
       line-height: 1;
     }
 
     .resto-score .score-label {
-      font-size: 0.7rem;
+      font-size: 0.72rem;
       color: var(--cream-muted);
       margin-top: 2px;
     }
@@ -93,8 +92,8 @@
       margin-bottom: 5px;
     }
 
-    .bar-label { font-size: 0.75rem; color: var(--cream-muted); width: 60px; flex-shrink: 0; }
-    .bar-val   { font-size: 0.75rem; color: var(--gold); width: 28px; text-align: right; flex-shrink: 0; }
+    .bar-label { font-size: 0.78rem; color: var(--cream-muted); width: 66px; flex-shrink: 0; }
+    .bar-val   { font-size: 0.78rem; color: var(--gold); width: 28px; text-align: right; flex-shrink: 0; }
     .bar-wrap  { flex: 1; }
 
     .resto-footer {
@@ -104,20 +103,18 @@
       margin-top: 0.75rem;
       padding-top: 0.75rem;
       border-top: 0.5px solid var(--border);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--cream-muted);
     }
 
     .resto-footer .resenas-count { display: flex; align-items: center; gap: 5px; }
 
-    /* Sin reseñas */
     .no-reviews {
       opacity: 0.6;
     }
 
     .no-reviews .big-score { color: var(--cream-muted); font-size: 1rem; }
 
-    /* Modal detalle */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -185,8 +182,8 @@
       margin-bottom: 6px;
     }
 
-    .resena-header .nombre { font-size: 0.88rem; font-weight: 500; color: var(--cream); }
-    .resena-header .fecha  { font-size: 0.75rem; color: var(--cream-muted); margin-left: auto; }
+    .resena-header .nombre { font-size: 0.9rem; font-weight: 500; color: var(--cream); }
+    .resena-header .fecha  { font-size: 0.78rem; color: var(--cream-muted); margin-left: auto; }
 
     .resena-scores {
       display: flex;
@@ -195,11 +192,11 @@
       flex-wrap: wrap;
     }
 
-    .resena-score-item { font-size: 0.78rem; color: var(--cream-muted); }
+    .resena-score-item { font-size: 0.8rem; color: var(--cream-muted); }
     .resena-score-item span { color: var(--gold); font-weight: 500; }
 
     .resena-comentario {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       color: var(--cream-muted);
       font-style: italic;
       margin-top: 4px;
@@ -226,14 +223,11 @@
         <p>Ranking del grupo ordenado por promedio general</p>
       </div>
 
-      <!-- Filtros -->
       <div class="filters" id="filtersRow">
         <input type="text" class="form-input filter-search" placeholder="Buscar restaurante..." id="searchInput" oninput="filterCards()">
         <button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">Todos</button>
-        <!-- Filtros por zona se cargan dinámicamente -->
       </div>
 
-      <!-- Grid de restaurantes -->
       <div class="grid-2 stagger" id="restoGrid">
         <div class="loading">Cargando restaurantes...</div>
       </div>
@@ -241,13 +235,12 @@
     </div>
   </div>
 
-  <!-- Modal detalle -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
     <div class="modal" id="modalContent">
       <div class="modal-header">
         <div>
           <h2 id="modalNombre">—</h2>
-          <p id="modalMeta" style="font-size:0.85rem;margin-top:2px">—</p>
+          <p id="modalMeta" style="font-size:0.87rem;margin-top:2px">—</p>
         </div>
         <button class="modal-close" onclick="closeModalDirect()">×</button>
       </div>
@@ -255,7 +248,7 @@
       <div style="display:flex;gap:1.5rem;align-items:flex-start;margin-bottom:1.5rem;flex-wrap:wrap">
         <div>
           <div style="font-size:2.5rem;font-family:var(--font-display);color:var(--gold);line-height:1" id="modalScore">—</div>
-          <div style="font-size:0.75rem;color:var(--cream-muted);margin-top:2px">promedio general</div>
+          <div style="font-size:0.78rem;color:var(--cream-muted);margin-top:2px">promedio general</div>
           <div class="stars-display" id="modalStars" style="margin-top:6px"></div>
         </div>
         <div style="flex:1;min-width:160px">
@@ -270,8 +263,13 @@
             <span class="bar-val" id="mValAtencion">—</span>
           </div>
           <div class="bar-row">
+            <span class="bar-label">Ambiente</span>
+            <div class="bar-wrap"><div class="score-bar"><div class="score-fill" id="mBarAmbiente" style="width:0%;background:var(--gold-light)"></div></div></div>
+            <span class="bar-val" id="mValAmbiente">—</span>
+          </div>
+          <div class="bar-row">
             <span class="bar-label">Postres</span>
-            <div class="bar-wrap"><div class="score-bar"><div class="score-fill" id="mBarPostres" style="width:0%;background:var(--wine)" ></div></div></div>
+            <div class="bar-wrap"><div class="score-bar"><div class="score-fill" id="mBarPostres" style="width:0%;background:var(--wine)"></div></div></div>
             <span class="bar-val" id="mValPostres">—</span>
           </div>
         </div>
@@ -280,8 +278,8 @@
       <div style="display:flex;gap:8px;margin-bottom:1.5rem;flex-wrap:wrap" id="modalTags"></div>
 
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-        <h3 style="font-family:var(--font-body);font-size:0.9rem;color:var(--cream)">Reseñas del grupo</h3>
-        <a href="resena.html" id="modalResenaBtn" class="btn btn-primary" style="font-size:0.8rem;padding:6px 14px">+ Mi reseña</a>
+        <h3 style="font-family:var(--font-body);font-size:0.95rem;color:var(--cream)">Reseñas del grupo</h3>
+        <a href="resena.html" id="modalResenaBtn" class="btn btn-primary" style="font-size:0.82rem;padding:6px 14px">+ Mi reseña</a>
       </div>
 
       <div class="resenas-list" id="modalResenas">
@@ -308,7 +306,6 @@
 
       await loadRestaurants()
 
-      // Si hay hash en la URL, abrir ese restaurante
       if (window.location.hash) {
         const id = window.location.hash.slice(1)
         const r = allRestaurants.find(x => x.id === id)
@@ -381,8 +378,9 @@
         card.onclick = () => openModal(r)
 
         const score = hasReviews ? parseFloat(r.avg_general).toFixed(1) : '—'
-        const comida  = r.avg_comida  ? parseFloat(r.avg_comida).toFixed(1)  : '—'
+        const comida   = r.avg_comida   ? parseFloat(r.avg_comida).toFixed(1)   : '—'
         const atencion = r.avg_atencion ? parseFloat(r.avg_atencion).toFixed(1) : '—'
+        const ambiente = r.avg_ambiente ? parseFloat(r.avg_ambiente).toFixed(1) : '—'
         const postres  = r.avg_postres  ? parseFloat(r.avg_postres).toFixed(1)  : '—'
 
         card.innerHTML = `
@@ -408,13 +406,19 @@
               <div class="bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${(parseFloat(r.avg_atencion)/5)*100}%"></div></div></div>
               <span class="bar-val">${atencion}</span>
             </div>
+            ${r.avg_ambiente ? `
+            <div class="bar-row">
+              <span class="bar-label">Ambiente</span>
+              <div class="bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${(parseFloat(r.avg_ambiente)/5)*100}%;background:var(--gold-light)"></div></div></div>
+              <span class="bar-val">${ambiente}</span>
+            </div>` : ''}
             ${r.avg_postres ? `
             <div class="bar-row">
               <span class="bar-label">Postres</span>
               <div class="bar-wrap"><div class="score-bar"><div class="score-fill" style="width:${(parseFloat(r.avg_postres)/5)*100}%;background:var(--wine)"></div></div></div>
               <span class="bar-val">${postres}</span>
             </div>` : ''}
-          </div>` : '<p style="font-size:0.82rem;color:var(--cream-muted);margin:0.5rem 0">Todavía sin reseñas del grupo.</p>'}
+          </div>` : '<p style="font-size:0.85rem;color:var(--cream-muted);margin:0.5rem 0">Todavía sin reseñas del grupo.</p>'}
           <div class="resto-footer">
             <span>${r.precio_mas_comun ? precioLabel(r.precio_mas_comun) : '—'}</span>
             ${r.ultima_salida ? `<span>Última visita: ${formatFecha(r.ultima_salida)}</span>` : ''}
@@ -438,11 +442,11 @@
         document.getElementById(barId).style.width = pct + '%'
         document.getElementById(valId).textContent = val ? parseFloat(val).toFixed(1) : '—'
       }
-      setBar('mBarComida', 'mValComida', r.avg_comida)
+      setBar('mBarComida',   'mValComida',   r.avg_comida)
       setBar('mBarAtencion', 'mValAtencion', r.avg_atencion)
-      setBar('mBarPostres', 'mValPostres', r.avg_postres)
+      setBar('mBarAmbiente', 'mValAmbiente', r.avg_ambiente)
+      setBar('mBarPostres',  'mValPostres',  r.avg_postres)
 
-      // Tags
       const tags = document.getElementById('modalTags')
       tags.innerHTML = ''
       if (r.precio_mas_comun) tags.innerHTML += `<span class="tag tag-gold">${precioLabel(r.precio_mas_comun)}</span>`
@@ -482,6 +486,7 @@
           <div class="resena-scores">
             <span class="resena-score-item">Comida <span>${parseFloat(r.comida).toFixed(1)}</span></span>
             <span class="resena-score-item">Atención <span>${parseFloat(r.atencion).toFixed(1)}</span></span>
+            ${r.ambiente ? `<span class="resena-score-item">Ambiente <span>${parseFloat(r.ambiente).toFixed(1)}</span></span>` : ''}
             ${r.postres ? `<span class="resena-score-item">Postres <span>${parseFloat(r.postres).toFixed(1)}</span></span>` : ''}
             <span class="resena-score-item">Precio <span>${precioLabel(r.precio_rango)}</span></span>
           </div>
