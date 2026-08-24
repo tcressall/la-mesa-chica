@@ -32,8 +32,8 @@
     }
 
     .profile-info { flex: 1; min-width: 200px; }
-    .profile-info h1 { margin-bottom: 2px; font-size: 1.6rem; }
-    .profile-info .email { font-size: 0.82rem; color: var(--cream-muted); margin-bottom: 8px; }
+    .profile-info h1 { margin-bottom: 2px; font-size: 1.7rem; }
+    .profile-info .email { font-size: 0.87rem; color: var(--cream-muted); margin-bottom: 8px; }
 
     .profile-stats {
       display: flex;
@@ -42,15 +42,17 @@
       flex-wrap: wrap;
     }
 
-    .profile-stat { font-size: 0.82rem; color: var(--cream-muted); }
-    .profile-stat strong { color: var(--gold); font-size: 1rem; display: block; }
+    .profile-stat { font-size: 0.87rem; color: var(--cream-muted); }
+    .profile-stat strong { color: var(--gold); font-size: 1.05rem; display: block; }
 
-    .edit-form {
+    .edit-form,
+    .password-form {
       display: none;
       margin-top: 1rem;
     }
 
-    .edit-form.open { display: block; }
+    .edit-form.open,
+    .password-form.open { display: block; }
 
     .edit-row {
       display: flex;
@@ -83,7 +85,7 @@
 
     .mi-resena-header h3 {
       font-family: var(--font-body);
-      font-size: 0.95rem;
+      font-size: 0.98rem;
       color: var(--cream);
       font-weight: 500;
       margin-bottom: 2px;
@@ -96,7 +98,7 @@
     }
 
     .score-pill {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       color: var(--cream-muted);
       background: var(--bg-raised);
       border: 0.5px solid var(--border);
@@ -113,7 +115,7 @@
       margin-top: 8px;
       padding-top: 8px;
       border-top: 0.5px solid var(--border);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: var(--cream-muted);
     }
 
@@ -121,7 +123,7 @@
       background: none;
       border: none;
       color: var(--cream-muted);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       cursor: pointer;
       font-family: var(--font-body);
       transition: color 0.15s;
@@ -129,6 +131,38 @@
     }
 
     .delete-btn:hover { color: #f5b8a8; }
+
+    /* Sección cambio de contraseña */
+    .password-section {
+      margin-top: 2.5rem;
+      padding: 1.5rem;
+      background: var(--bg-surface);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius-lg);
+    }
+
+    .password-section h2 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--cream);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .password-section > p {
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    .password-msg {
+      font-size: 0.85rem;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .password-msg.show { display: block; }
+    .password-msg.error   { color: #f5b8a8; }
+    .password-msg.success { color: rgba(168, 212, 180, 0.9); }
   </style>
 </head>
 <body>
@@ -159,11 +193,11 @@
           <div class="profile-stats" id="profileStats"></div>
 
           <div style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-ghost" style="font-size:0.82rem;padding:6px 14px" onclick="toggleEdit()">Editar perfil</button>
-            <button class="btn btn-danger" style="font-size:0.82rem;padding:6px 14px" onclick="signOut(client)">Cerrar sesión</button>
+            <button class="btn btn-ghost" style="font-size:0.85rem;padding:6px 14px" onclick="toggleEdit()">Editar perfil</button>
+            <button class="btn btn-danger" style="font-size:0.85rem;padding:6px 14px" onclick="signOut(client)">Cerrar sesión</button>
           </div>
 
-          <!-- Form edición -->
+          <!-- Form edición nombre/apodo -->
           <div class="edit-form" id="editForm">
             <div class="divider"></div>
             <div class="edit-row">
@@ -177,8 +211,8 @@
               </div>
             </div>
             <div style="display:flex;gap:8px;margin-top:8px">
-              <button class="btn btn-primary" style="font-size:0.82rem;padding:7px 16px" onclick="saveProfile()">Guardar</button>
-              <button class="btn btn-ghost"   style="font-size:0.82rem;padding:7px 16px" onclick="toggleEdit()">Cancelar</button>
+              <button class="btn btn-primary" style="font-size:0.85rem;padding:7px 16px" onclick="saveProfile()">Guardar</button>
+              <button class="btn btn-ghost"   style="font-size:0.85rem;padding:7px 16px" onclick="toggleEdit()">Cancelar</button>
             </div>
           </div>
         </div>
@@ -187,7 +221,7 @@
       <!-- Mis reseñas -->
       <div class="section-header" style="margin-bottom:1rem">
         <h2>Mis reseñas</h2>
-        <a href="resena.html" class="btn btn-primary" style="font-size:0.8rem;padding:6px 14px">+ Nueva reseña</a>
+        <a href="resena.html" class="btn btn-primary" style="font-size:0.82rem;padding:6px 14px">+ Nueva reseña</a>
       </div>
       <div id="misResenas">
         <div class="loading">Cargando reseñas...</div>
@@ -200,6 +234,30 @@
         </div>
         <div id="misSalidas">
           <div class="loading">Cargando salidas...</div>
+        </div>
+      </div>
+
+      <!-- Cambio de contraseña -->
+      <div class="password-section">
+        <h2>Contraseña</h2>
+        <p>Cambiá la contraseña que te asignaron por una tuya.</p>
+        <button class="btn btn-ghost" style="font-size:0.85rem;padding:7px 16px" onclick="togglePasswordForm()">Cambiar contraseña</button>
+
+        <div class="password-form" id="passwordForm">
+          <div class="divider"></div>
+          <div class="form-group">
+            <label class="form-label">Contraseña nueva</label>
+            <input type="password" class="form-input" id="newPass" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmar contraseña</label>
+            <input type="password" class="form-input" id="confirmPass" placeholder="Repetila" autocomplete="new-password">
+          </div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary" style="font-size:0.85rem;padding:7px 16px" onclick="changePassword()" id="changePassBtn">Guardar contraseña</button>
+            <button class="btn btn-ghost"   style="font-size:0.85rem;padding:7px 16px" onclick="togglePasswordForm()">Cancelar</button>
+          </div>
+          <p class="password-msg" id="passwordMsg"></p>
         </div>
       </div>
 
@@ -248,6 +306,59 @@
       document.getElementById('editForm').classList.toggle('open')
     }
 
+    function togglePasswordForm() {
+      const form = document.getElementById('passwordForm')
+      form.classList.toggle('open')
+      document.getElementById('newPass').value = ''
+      document.getElementById('confirmPass').value = ''
+      document.getElementById('passwordMsg').classList.remove('show')
+    }
+
+    async function changePassword() {
+      const newPass     = document.getElementById('newPass').value
+      const confirmPass = document.getElementById('confirmPass').value
+      const msg = document.getElementById('passwordMsg')
+      const btn = document.getElementById('changePassBtn')
+
+      msg.classList.remove('show', 'error', 'success')
+
+      if (!newPass || newPass.length < 6) {
+        msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'
+        msg.classList.add('show', 'error')
+        return
+      }
+
+      if (newPass !== confirmPass) {
+        msg.textContent = 'Las contraseñas no coinciden.'
+        msg.classList.add('show', 'error')
+        return
+      }
+
+      btn.textContent = 'Guardando...'
+      btn.disabled = true
+
+      const { error } = await client.auth.updateUser({ password: newPass })
+
+      if (error) {
+        msg.textContent = 'Error al cambiar la contraseña. Intentá de nuevo.'
+        msg.classList.add('show', 'error')
+        btn.textContent = 'Guardar contraseña'
+        btn.disabled = false
+        return
+      }
+
+      msg.textContent = '¡Contraseña actualizada!'
+      msg.classList.add('show', 'success')
+      btn.textContent = 'Guardar contraseña'
+      btn.disabled = false
+      document.getElementById('newPass').value = ''
+      document.getElementById('confirmPass').value = ''
+
+      setTimeout(() => {
+        togglePasswordForm()
+      }, 2000)
+    }
+
     async function saveProfile() {
       const nombre = document.getElementById('editNombre').value.trim()
       const apodo  = document.getElementById('editApodo').value.trim()
@@ -277,7 +388,6 @@
 
       const container = document.getElementById('misResenas')
 
-      // Stats
       document.getElementById('profileStats').innerHTML = `
         <div class="profile-stat"><strong>${data?.length || 0}</strong>Reseñas</div>
       `
@@ -295,7 +405,7 @@
           <div class="mi-resena-header">
             <div>
               <h3>${r.restaurantes?.nombre || '—'}</h3>
-              <p style="font-size:0.78rem;color:var(--cream-muted)">${r.restaurantes?.zona || ''} · ${r.restaurantes?.tipo_cocina || ''}</p>
+              <p style="font-size:0.8rem;color:var(--cream-muted)">${r.restaurantes?.zona || ''} · ${r.restaurantes?.tipo_cocina || ''}</p>
             </div>
             <div class="stars-display" id="stars-resena-${r.id}"></div>
           </div>
@@ -305,18 +415,17 @@
             ${r.postres ? `<span class="score-pill">Postres <span>${parseFloat(r.postres).toFixed(1)}</span></span>` : ''}
             <span class="score-pill">Precio <span>${precioLabel(r.precio_rango)}</span></span>
           </div>
-          ${r.comentario ? `<p style="font-size:0.82rem;color:var(--cream-muted);margin-top:8px;font-style:italic">"${r.comentario}"</p>` : ''}
+          ${r.comentario ? `<p style="font-size:0.85rem;color:var(--cream-muted);margin-top:8px;font-style:italic">"${r.comentario}"</p>` : ''}
           <div class="mi-resena-footer">
             <span>${formatFecha(r.fecha)}</span>
             <div style="display:flex;gap:10px">
-              <a href="resena.html?id=${r.restaurante_id}" style="font-size:0.78rem;color:var(--gold-muted)">Editar</a>
+              <a href="resena.html?id=${r.restaurante_id}" style="font-size:0.8rem;color:var(--gold-muted)">Editar</a>
               <button class="delete-btn" onclick="deleteResena('${r.id}', this)">Eliminar</button>
             </div>
           </div>
         `
         container.appendChild(card)
 
-        // Calcular promedio
         const vals = [r.comida, r.atencion, r.postres].filter(Boolean).map(Number)
         const avg = vals.reduce((a,b) => a+b, 0) / vals.length
         renderStars(document.getElementById(`stars-resena-${r.id}`), avg, 14)
@@ -341,7 +450,6 @@
 
       const container = document.getElementById('misSalidas')
 
-      // Agregar stat
       const statsEl = document.getElementById('profileStats')
       statsEl.innerHTML += `<div class="profile-stat"><strong>${data?.length || 0}</strong>Salidas</div>`
 
@@ -361,10 +469,10 @@
         item.innerHTML = `
           <div style="display:flex;justify-content:space-between;align-items:center">
             <div>
-              <p style="font-size:0.9rem;font-weight:500;color:var(--cream)">${s.restaurantes?.nombre || '—'}</p>
-              <p style="font-size:0.78rem">${formatFecha(s.fecha)} · ${s.restaurantes?.zona || ''}</p>
+              <p style="font-size:0.95rem;font-weight:500;color:var(--cream)">${s.restaurantes?.nombre || '—'}</p>
+              <p style="font-size:0.8rem">${formatFecha(s.fecha)} · ${s.restaurantes?.zona || ''}</p>
             </div>
-            <span style="font-size:0.82rem;color:var(--gold)">${precio}</span>
+            <span style="font-size:0.87rem;color:var(--gold)">${precio}</span>
           </div>
         `
         container.appendChild(item)
